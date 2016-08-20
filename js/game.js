@@ -23,8 +23,10 @@ var game = game || {
     background: function () {
       for(var x = -1; x < 1; x++) {
         for(var y = -1; y < 1; y++) {
+          game.ctx.save();
           game.ctx.translate(game.player.x, game.player.y);
           game.ctx.drawImage(game.assets.sprites[0].image, 0 - game.assets.sprites[0].image.width * x, 0 - game.assets.sprites[0].image.height * y);
+          game.ctx.restore();
         }
       }
     },
@@ -141,19 +143,19 @@ var game = game || {
   player: {
     x: 0,
     y: 0,
-    speed: 1,
+    speed: 10,
     update: function () {
       if(game.controls.up) {
-        game.player.y -= game.player.speed;
-      }
-      if(game.controls.right) {
-        game.player.x += game.player.speed;
-      }
-      if(game.controls.down) {
         game.player.y += game.player.speed;
       }
-      if(game.controls.left) {
+      if(game.controls.right) {
         game.player.x -= game.player.speed;
+      }
+      if(game.controls.down) {
+        game.player.y -= game.player.speed;
+      }
+      if(game.controls.left) {
+        game.player.x += game.player.speed;
       }
 
     }
