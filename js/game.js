@@ -5,6 +5,12 @@ var game = game || {
     audio: []
   },
   canvas: document.createElement('canvas'),
+  chunk: {
+    x: 0,
+    y: 0,
+    width: 1920,
+    height: 1080
+  },
   ctx: null,
   config: {
     mods: [],
@@ -39,8 +45,34 @@ var game = game || {
       this.linePosition = 40;
       this.log("player.x: " + game.player.x);
       this.log("player.y: " + game.player.y);
-      this.log("chunk.x: " + game.player.chunk.x);
-      this.log("chunk.y: " + game.player.chunk.y);
+      this.log("chunk.x: " + game.chunk.x);
+      this.log("chunk.y: " + game.chunk.y);
+
+      // Draw chunk outlines
+      for(var x = game.chunk.x - 2; x < game.chunk.x + 2; x++) {
+        for(var y = game.chunk.y - 2; y < game.chunk.y + 2; y++) {
+          game.ctx.save();
+          game.ctx.translate(window.innerWidth / 2 - game.player.x, window.innerHeight / 2 - game.player.y);
+          game.ctx.strokeStyle = "red";
+          game.ctx.strokeRect(game.assets.sprites[0].image.width * x, game.assets.sprites[0].image.height * y , game.chunk.width, game.chunk.height);
+          game.ctx.fillStyle = "red";
+          // game.ctx.font = "30px Arial";
+          // game.ctx.fillText(game.chunk.x + " , " + game.chunk.y, game.assets.sprites[0].image.width * x + 50, game.assets.sprites[0].image.height * y + 50);
+          game.ctx.restore();
+        }
+      }
+
+      // Draw player position
+      game.ctx.beginPath();
+      game.ctx.arc(window.innerWidth / 2, window.innerHeight / 2, 20, 0, 2 * Math.PI, false);
+      game.ctx.strokeStyle = "red";
+      game.ctx.stroke();
+      game.ctx.closePath();
+      game.ctx.beginPath();
+      game.ctx.arc(window.innerWidth / 2, window.innerHeight / 2, 1, 0, 2 * Math.PI, false);
+      game.ctx.fillStyle = "red";
+      game.ctx.fill();
+      game.ctx.closePath();
 
     }
   },
@@ -152,12 +184,6 @@ var game = game || {
   player: {
     x: (window.innerWidth / 2).toFixed(),
     y: (window.innerHeight / 2).toFixed(),
-    chunk: {
-      x: 0,
-      y: 0,
-      width: 1920,
-      height: 1080
-    },
     speed: 10,
     update: function () {
       if(game.controls.up) {
@@ -172,8 +198,8 @@ var game = game || {
       if(game.controls.left) {
         game.player.x -= game.player.speed;
       }
-      game.player.chunk.x = (game.player.x) ? Math.floor(game.player.x / game.player.chunk.width) : 0;
-      game.player.chunk.y = (game.player.y) ? Math.floor(game.player.y / game.player.chunk.height) : 0;
+      game.chunk.x = (game.player.x) ? Math.floor(game.player.x / game.chunk.width) : 0;
+      game.chunk.y = (game.player.y) ? Math.floor(game.player.y / game.chunk.height) : 0;
 
     },
     draw: function () {
@@ -197,13 +223,13 @@ var game = game || {
   },
   universe: {
     draw: function () {
-      for(var x = game.player.chunk.x - 2; x < game.player.chunk.x + 2; x++) {
-        for(var y = game.player.chunk.y - 2; y < game.player.chunk.y + 2; y++) {
+      for(var x = game.chunk.x - 2; x < game.chunk.x + 2; x++) {
+        for(var y = game.chunk.y - 2; y < game.chunk.y + 2; y++) {
           game.ctx.save();
           game.ctx.translate(window.innerWidth / 2 - game.player.x, window.innerHeight / 2 - game.player.y);
           game.ctx.drawImage(game.assets.sprites[0].image, game.assets.sprites[0].image.width * x, game.assets.sprites[0].image.height * y);
           game.ctx.strokeStyle = "red";
-          game.ctx.strokeRect(game.assets.sprites[0].image.width * x, game.assets.sprites[0].image.height * y , game.player.chunk.width, game.player.chunk.height);
+          game.ctx.strokeRect(game.assets.sprites[0].image.width * x, game.assets.sprites[0].image.height * y , game.chunk.width, game.chunk.height);
           game.ctx.restore();
         }
       }
