@@ -8,8 +8,16 @@ var game = game || {
   chunk: {
     x: 0,
     y: 0,
-    width: 1920,
-    height: 1080
+    width: 1024,
+    height: 1024,
+    Chunk: function (x, y) {
+      this.x = x;
+      this.y = y;
+      this.stars = [];
+      this.seed = x + y;
+      this.starCount = Math.floor(game.math.random(this.seed) * 5 + 1);
+    },
+    chunks: []
   },
   ctx: null,
   config: {
@@ -26,7 +34,7 @@ var game = game || {
     left: false
   },
   draw: function () {
-    game.universe.draw();
+    // game.universe.draw();
     game.player.draw();
     game.debug.draw();
   },
@@ -47,6 +55,7 @@ var game = game || {
       this.log("player.y: " + game.player.y);
       this.log("chunk.x: " + game.chunk.x);
       this.log("chunk.y: " + game.chunk.y);
+      this.log("FPS: " + game.fps.rate);
 
       // Draw chunk outlines
       for(var x = game.chunk.x - 2; x < game.chunk.x + 2; x++) {
@@ -54,10 +63,10 @@ var game = game || {
           game.ctx.save();
           game.ctx.translate(window.innerWidth / 2 - game.player.x, window.innerHeight / 2 - game.player.y);
           game.ctx.strokeStyle = "red";
-          game.ctx.strokeRect(game.assets.sprites[0].image.width * x, game.assets.sprites[0].image.height * y , game.chunk.width, game.chunk.height);
+          game.ctx.strokeRect(game.chunk.width * x, game.chunk.height * y , game.chunk.width, game.chunk.height);
           game.ctx.fillStyle = "red";
-          // game.ctx.font = "30px Arial";
-          // game.ctx.fillText(game.chunk.x + " , " + game.chunk.y, game.assets.sprites[0].image.width * x + 50, game.assets.sprites[0].image.height * y + 50);
+          game.ctx.font = "30px Arial";
+          game.ctx.fillText(x + ", " + y, game.chunk.width * x + 25, game.chunk.height * y + 50);
           game.ctx.restore();
         }
       }
@@ -181,9 +190,20 @@ var game = game || {
     game.update();
     requestAnimationFrame(game.loop);
   },
+  math: {
+    angleBetweenPoints: function (p1x, p1y, p2x, p2y) {
+      return Math.atan2(p2y - p1y, p2x - p1x) * 180 / Math.PI;
+    },
+    random: function (seed) {
+      if (!seed)
+        seed = 0;
+      seed = (seed*9301+49297) % 233280;
+      return seed/(233280.0);
+    }
+  },
   player: {
-    x: (window.innerWidth / 2).toFixed(),
-    y: (window.innerHeight / 2).toFixed(),
+    x: Number((window.innerWidth / 2).toFixed()),
+    y: Number((window.innerHeight / 2).toFixed()),
     speed: 10,
     update: function () {
       if(game.controls.up) {
@@ -228,14 +248,29 @@ var game = game || {
           game.ctx.save();
           game.ctx.translate(window.innerWidth / 2 - game.player.x, window.innerHeight / 2 - game.player.y);
           game.ctx.drawImage(game.assets.sprites[0].image, game.assets.sprites[0].image.width * x, game.assets.sprites[0].image.height * y);
-          game.ctx.strokeStyle = "red";
-          game.ctx.strokeRect(game.assets.sprites[0].image.width * x, game.assets.sprites[0].image.height * y , game.chunk.width, game.chunk.height);
           game.ctx.restore();
         }
       }
+    },
+    update: function () {
+      for(var x = game.chunk.x - 2; x < game.chunk.x + 2; x++) {
+        if(typeof game.chunk.chunks[x] == 'undefined') {
+          game.chunk.chunks[x] = [];
+        }
+        for(var y = game.chunk.y - 2; y < game.chunk.y + 2; y++) {
+          if(typeof game.chunk.chunks[x][y] == 'undefined') {
+            game.chunk.chunks[x][y] = new game.chunk.Chunk(x,y);
+          }
+        }
+      }
+    },
+    Star: function (x, y) {
+      this.x = x;
+      this.y = y;
     }
   },
   update: function () {
+    game.universe.update();
     game.player.update();
     game.fps.update();
   },
