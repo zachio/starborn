@@ -14,7 +14,7 @@ var game = game || {
       this.x = x;
       this.y = y;
       this.stars = [];
-      this.seed = x + y;
+      this.seed = Math.abs(x * y) * 20;
       this.starCount = Math.floor(game.math.random(this.seed) * 5 + 1);
     },
     chunks: []
