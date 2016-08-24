@@ -57,19 +57,18 @@ var game = game || {
       this.log("tile.y: " + game.tile.y);
       this.log("tile.id: " + game.tile.id);
       this.log("FPS: " + game.fps.rate);
-      //Draw tile boxes
 
+      //Draw tile boxes
+      game.ctx.save();
+      game.ctx.translate(window.innerWidth / 2 - game.player.x * game.tile.width, window.innerHeight / 2 - game.player.y * game.tile.height);
       for(var x = 0 ; x < game.player.x + game.grid.width / 2 + 1; x++) {
         for(var y = 0; y < game.player.y + game.grid.height / 2 + 1; y++) {
-          game.ctx.save();
-          game.ctx.translate(window.innerWidth / 2 - game.player.x * game.tile.width, window.innerHeight / 2 - game.player.y * game.tile.height);
-          game.ctx.strokeStyle = "red";
-          game.ctx.strokeRect(game.tile.width * x, game.tile.height *  y, game.tile.width, game.tile.height);
-          game.ctx.fillStyle = "red";
-          game.ctx.font = "10px Arial";
-          game.ctx.restore();
+          game.ctx.rect(game.tile.width * x, game.tile.height *  y, game.tile.width, game.tile.height);
         }
       }
+      game.ctx.strokeStyle = "red";
+      game.ctx.stroke();
+      game.ctx.restore();
 
       // Draw player position
       game.ctx.beginPath();
