@@ -8,13 +8,12 @@ var game = game || {
   chunk: {
     x: 0,
     y: 0,
-    width: 1024,
-    height: 1024,
+    width: 32,
+    height: 32,
     Chunk: function (x, y) {
       this.x = x;
       this.y = y;
-      this.stars = [];
-      this.seed = Math.abs(x * y) * 20;
+      this.seed = 0;
       this.starCount = Math.floor(game.math.random(this.seed) * 5 + 1);
     },
     chunks: []
@@ -56,17 +55,33 @@ var game = game || {
       this.log("chunk.x: " + game.chunk.x);
       this.log("chunk.y: " + game.chunk.y);
       this.log("FPS: " + game.fps.rate);
+      //Draw tile boxes
+      /*
+      for(var x = game.chunk.x - 2; x < game.chunk.x + 2; x++) {
+        for(var y = game.chunk.y - 2; y < game.chunk.y + 2; y++) {
+          for(var tileX = game.chunk.width * game.tile.width * x; tileX < game.chunk.width * game.tile.width * x * 2; tileX++) {
+            for(var tileY = game.chunk.height * game.tile.height * y; tileY < game.chunk.height * y * 2; tileY++) {
+              game.ctx.save();
+              game.ctx.translate(window.innerWidth / 2 - game.player.x, window.innerHeight / 2 - game.player.y);
+              game.ctx.strokeStyle = "blue";
+              game.ctx.strokeRect(game.tile.width * tileX, game.tile.height * tileY , game.tile.width, game.tile.height);
+              game.ctx.restore();
+            }
+          }
+        }
+      }*/
 
       // Draw chunk outlines
+
       for(var x = game.chunk.x - 2; x < game.chunk.x + 2; x++) {
         for(var y = game.chunk.y - 2; y < game.chunk.y + 2; y++) {
           game.ctx.save();
           game.ctx.translate(window.innerWidth / 2 - game.player.x, window.innerHeight / 2 - game.player.y);
           game.ctx.strokeStyle = "red";
-          game.ctx.strokeRect(game.chunk.width * x, game.chunk.height * y , game.chunk.width, game.chunk.height);
+          game.ctx.strokeRect(game.chunk.width * game.tile.width * x, game.chunk.height * game.tile.height *  y, game.chunk.width * game.tile.width, game.chunk.height * game.tile.height);
           game.ctx.fillStyle = "red";
           game.ctx.font = "30px Arial";
-          game.ctx.fillText(x + ", " + y, game.chunk.width * x + 25, game.chunk.height * y + 50);
+          game.ctx.fillText(x + ", " + y, game.chunk.width * game.tile.width * x + 25, game.chunk.height * game.tile.height * y + 50);
           game.ctx.restore();
         }
       }
@@ -218,8 +233,8 @@ var game = game || {
       if(game.controls.left) {
         game.player.x -= game.player.speed;
       }
-      game.chunk.x = (game.player.x) ? Math.floor(game.player.x / game.chunk.width) : 0;
-      game.chunk.y = (game.player.y) ? Math.floor(game.player.y / game.chunk.height) : 0;
+      game.chunk.x = (game.player.x) ? Math.floor(game.player.x / (game.chunk.width * game.tile.width)) : 0;
+      game.chunk.y = (game.player.y) ? Math.floor(game.player.y / (game.chunk.height * game.tile.height)) : 0;
 
     },
     draw: function () {
@@ -241,7 +256,18 @@ var game = game || {
 
     game.assets.sprites.push(this);
   },
+  tile: {
+    width: 32,
+    height: 32,
+    id: 0
+  },
   universe: {
+    width: 65535,
+    height: 65535,
+    idAt: function (x, y) {
+      var id = y * this.width + x;
+      console.log("Tile ID is " + id);
+    },
     draw: function () {
       for(var x = game.chunk.x - 2; x < game.chunk.x + 2; x++) {
         for(var y = game.chunk.y - 2; y < game.chunk.y + 2; y++) {
