@@ -53,22 +53,27 @@ var game = game || {
       this.linePosition = 40;
       this.log("player.x: " + game.player.x);
       this.log("player.y: " + game.player.y);
-      this.log("tile.x: " + game.tile.x);
-      this.log("tile.y: " + game.tile.y);
+      // this.log("tile.x: " + game.tile.x);
+      // this.log("tile.y: " + game.tile.y);
       this.log("tile.id: " + game.tile.id);
       this.log("FPS: " + game.fps.rate);
 
       //Draw tile boxes
-      game.ctx.save();
-      game.ctx.translate(window.innerWidth / 2 - game.player.x * game.tile.width, window.innerHeight / 2 - game.player.y * game.tile.height);
-      for(var x = 0 ; x < game.player.x + game.grid.width / 2 + 1; x++) {
-        for(var y = 0; y < game.player.y + game.grid.height / 2 + 1; y++) {
-          game.ctx.rect(game.tile.width * x, game.tile.height *  y, game.tile.width, game.tile.height);
+      // game.ctx.save();
+      // game.ctx.translate(window.innerWidth / 2 - game.player.x * game.tile.width, window.innerHeight / 2 - game.player.y * game.tile.height);
+      game.ctx.beginPath();
+      for(var x = -game.player.x - game.grid.width; x < -game.player.x + game.grid.width; x++) {
+        for(var y = -game.player.y - game.grid.height; y < -game.player.y + game.grid.height; y++) {
+          game.ctx.rect(
+            x * game.tile.width + game.tile.width * game.grid.width,
+            y * game.tile.height + game.tile.height * game.grid.height,
+            game.tile.width, game.tile.height);
         }
       }
+      game.ctx.closePath();
       game.ctx.strokeStyle = "red";
       game.ctx.stroke();
-      game.ctx.restore();
+      // game.ctx.restore();
 
       // Draw player position
       game.ctx.beginPath();
