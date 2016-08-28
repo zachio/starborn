@@ -70,47 +70,6 @@ var game = game || {
       game.ctx.fillText(message, 40, this.linePosition);
       this.linePosition += 20;
     },
-    drawGrid1: function () {
-      game.ctx.beginPath();
-      for(var x = game.player.x - window.innerWidth / 2 / game.tile.width; x < game.player.x + window.innerWidth / 2 / game.tile.width; x++) {
-        for(var y = game.player.y - window.innerHeight / 2 / game.tile.height; y < window.innerHeight / 2 / game.tile.height; y++) {
-          game.debug.drawX = x;
-          game.debug.drawY = y;
-          game.debug.count++;
-          game.ctx.rect(
-            game.tile.width * x - game.player.x * game.tile.width + window.innerWidth / 2 - game.tile.width / 2 ,
-            game.tile.height * y - game.player.y * game.tile.height + window.innerHeight / 2 - game.tile.height / 2,
-            game.tile.width, game.tile.height);
-        }
-      }
-      game.ctx.closePath();
-      game.ctx.strokeStyle = "red";
-      game.ctx.stroke();
-    },
-    drawGrid2:  function () {
-      game.ctx.beginPath();
-      for(var cx = game.chunk.x - 1; cx < game.chunk.x + 1; cx++) {
-        for(var cy = game.chunk.y - 1; cy < game.chunk.y + 1; cy++) {
-          if(typeof game.chunk.chunks[cx] != 'undefined') {
-            if(typeof game.chunk.chunks[cx][cy] != 'undefined') {
-              for(var x = cx; x < game.chunk.chunks[cx][cy].tiles.length; x++) {
-                for(var y = cy; y < game.chunk.chunks[cx][cy].tiles[x].length; y++) {
-                  var tile = game.chunk.chunks[cx][cy].tiles[x][y];
-                  //  console.log(tile.x * game.tile.width)
-                  game.ctx.rect(
-                    tile.x * game.tile.width,
-                    tile.y * game.tile.height,
-                    tile.width, tile.height);
-                }
-              }
-            }
-          }
-        }
-      }
-      game.ctx.closePath();
-      game.ctx.strokeStyle = "red";
-      game.ctx.stroke();
-    },
     drawGrid3: function () {
       game.ctx.beginPath();
       for(var x = game.player.x - window.innerWidth / game.tile.width / 2; x < game.player.x + game.grid.width / 2; x++) {
@@ -141,8 +100,6 @@ var game = game || {
 
       //Draw tile boxes
       game.debug.count = 0;
-      // this.drawGrid1();
-      // this.drawGrid2();
       this.drawGrid3();
 
       // Draw player position
