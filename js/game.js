@@ -78,7 +78,7 @@ var game = game || {
           game.debug.drawY = y;
           game.debug.count++;
           game.ctx.rect(
-            game.tile.width * x - game.player.x * game.tile.width + window.innerWidth / 2 - game.tile.width / 2,
+            game.tile.width * x - game.player.x * game.tile.width + window.innerWidth / 2 - game.tile.width / 2 ,
             game.tile.height * y - game.player.y * game.tile.height + window.innerHeight / 2 - game.tile.height / 2,
             game.tile.width, game.tile.height);
         }
@@ -117,8 +117,8 @@ var game = game || {
         for(var y = game.player.y - window.innerHeight / game.tile.height / 2; y < game.player.y + game.grid.height / 2; y++) {
           game.debug.count++;
           game.ctx.rect(
-            -x * game.tile.width + game.tile.width * Math.floor(game.grid.width / 2),
-            -y * game.tile.height + game.tile.height * Math.floor(game.grid.height / 2),
+            -x * game.tile.width + game.tile.width * Math.floor((game.grid.width - 1) / 2 + game.player.x),
+            -y * game.tile.height + game.tile.height * Math.floor((game.grid.height - 1) / 2 + game.player.y),
             game.tile.width, game.tile.height);
         }
       }
@@ -283,7 +283,7 @@ var game = game || {
     }
   },
   player: {
-    x: 0,
+    x: 22,
     y: 0,
     speed: 0.1,
     update: function () {
