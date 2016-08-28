@@ -5,19 +5,40 @@ var game = game || {
     audio: []
   },
   canvas: document.createElement('canvas'),
+  chunk: {
+    x: 0,
+    y: 0,
+    width: 256,
+    height: 256,
+    chunks: [],
+    Chunk: function (x, y) {
+      this.x = x;
+      this.y = y;
+      this.tiles = [];
+      for(var x = this.x * game.chunk.width; x <  this.x * game.chunk.width + game.chunk.width / game.tile.width; x++) {
+        this.tiles[x] = [];
+        for(var y = this.y * game.chunk.height; y < this.y * game.chunk.height + game.chunk.height / game.tile.height; y++) {
+          this.tiles[x][y] = new game.tile.Tile(x,y);
+        }
+      }
+    }
+  },
   tile: {
     x: 0,
     y: 0,
     id: 0,
     width: 32,
     height: 32,
-    Chunk: function (x, y) {
+    Tile: function (x, y) {
       this.x = x;
       this.y = y;
-      this.seed = 0;
-      this.starCount = Math.floor(game.math.random(this.seed) * 5 + 1);
-    },
-    chunks: []
+      this.id = game.universe.idAt(x, y);
+      if(game.math.random(this.id) < 0.1) {
+        this.isStar = true;
+      } else {
+        this.isStar = false;
+      }
+    }
   },
   ctx: null,
   config: {
@@ -42,9 +63,68 @@ var game = game || {
     background: "rgba(0,0,0,0.9)",
     textColor: "white",
     linePosition: 40,
+    drawX: 0,
+    drawY: 0,
+    count: 0,
     log: function (message) {
       game.ctx.fillText(message, 40, this.linePosition);
       this.linePosition += 20;
+    },
+    drawGrid1: function () {
+      game.ctx.beginPath();
+      for(var x = game.player.x - window.innerWidth / 2 / game.tile.width; x < game.player.x + window.innerWidth / 2 / game.tile.width; x++) {
+        for(var y = game.player.y - window.innerHeight / 2 / game.tile.height; y < window.innerHeight / 2 / game.tile.height; y++) {
+          game.debug.drawX = x;
+          game.debug.drawY = y;
+          game.debug.count++;
+          game.ctx.rect(
+            game.tile.width * x - game.player.x * game.tile.width + window.innerWidth / 2 - game.tile.width / 2,
+            game.tile.height * y - game.player.y * game.tile.height + window.innerHeight / 2 - game.tile.height / 2,
+            game.tile.width, game.tile.height);
+        }
+      }
+      game.ctx.closePath();
+      game.ctx.strokeStyle = "red";
+      game.ctx.stroke();
+    },
+    drawGrid2:  function () {
+      game.ctx.beginPath();
+      for(var cx = game.chunk.x - 1; cx < game.chunk.x + 1; cx++) {
+        for(var cy = game.chunk.y - 1; cy < game.chunk.y + 1; cy++) {
+          if(typeof game.chunk.chunks[cx] != 'undefined') {
+            if(typeof game.chunk.chunks[cx][cy] != 'undefined') {
+              for(var x = cx; x < game.chunk.chunks[cx][cy].tiles.length; x++) {
+                for(var y = cy; y < game.chunk.chunks[cx][cy].tiles[x].length; y++) {
+                  var tile = game.chunk.chunks[cx][cy].tiles[x][y];
+                  //  console.log(tile.x * game.tile.width)
+                  game.ctx.rect(
+                    tile.x * game.tile.width,
+                    tile.y * game.tile.height,
+                    tile.width, tile.height);
+                }
+              }
+            }
+          }
+        }
+      }
+      game.ctx.closePath();
+      game.ctx.strokeStyle = "red";
+      game.ctx.stroke();
+    },
+    drawGrid3: function () {
+      game.ctx.beginPath();
+      for(var x = game.player.x - window.innerWidth / game.tile.width / 2; x < game.player.x + game.grid.width / 2; x++) {
+        for(var y = game.player.y - window.innerHeight / game.tile.height / 2; y < game.player.y + game.grid.height / 2; y++) {
+          game.debug.count++;
+          game.ctx.rect(
+            -x * game.tile.width + game.tile.width * Math.floor(game.grid.width / 2),
+            -y * game.tile.height + game.tile.height * Math.floor(game.grid.height / 2),
+            game.tile.width, game.tile.height);
+        }
+      }
+      game.ctx.closePath();
+      game.ctx.strokeStyle = "red";
+      game.ctx.stroke();
     },
     draw: function () {
       game.ctx.fillStyle = this.background;
@@ -53,27 +133,17 @@ var game = game || {
       this.linePosition = 40;
       this.log("player.x: " + game.player.x);
       this.log("player.y: " + game.player.y);
-      // this.log("tile.x: " + game.tile.x);
-      // this.log("tile.y: " + game.tile.y);
       this.log("tile.id: " + game.tile.id);
       this.log("FPS: " + game.fps.rate);
+      this.log("Draw X: " + this.drawX);
+      this.log("Draw Y: " + this.drawY);
+      this.log("loop Count: " + this.count);
 
       //Draw tile boxes
-      // game.ctx.save();
-      // game.ctx.translate(window.innerWidth / 2 - game.player.x * game.tile.width, window.innerHeight / 2 - game.player.y * game.tile.height);
-      game.ctx.beginPath();
-      for(var x = -game.player.x - game.grid.width; x < -game.player.x + game.grid.width; x++) {
-        for(var y = -game.player.y - game.grid.height; y < -game.player.y + game.grid.height; y++) {
-          game.ctx.rect(
-            x * game.tile.width + game.tile.width * game.grid.width,
-            y * game.tile.height + game.tile.height * game.grid.height,
-            game.tile.width, game.tile.height);
-        }
-      }
-      game.ctx.closePath();
-      game.ctx.strokeStyle = "red";
-      game.ctx.stroke();
-      // game.ctx.restore();
+      game.debug.count = 0;
+      // this.drawGrid1();
+      // this.drawGrid2();
+      this.drawGrid3();
 
       // Draw player position
       game.ctx.beginPath();
@@ -119,8 +189,8 @@ var game = game || {
   init: function () {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    this.grid.width = window.innerWidth / this.tile.width;
-    this.grid.height = window.innerHeight / this.tile.height;
+    this.grid.width = Math.ceil(window.innerWidth / this.tile.width);
+    this.grid.height = Math.ceil(window.innerHeight / this.tile.height);
     this.canvas.style.background = "black";
     this.ctx = this.canvas.getContext('2d');
     this.load.mods();
@@ -135,8 +205,8 @@ var game = game || {
     window.addEventListener('resize', function() {
       game.canvas.width = window.innerWidth;
       game.canvas.height = window.innerHeight;
-      game.grid.width = window.innerWidth / game.tile.width;
-      game.grid.height = window.innerHeight / game.tile.height;
+      game.grid.width = Math.ceil(window.innerWidth / game.tile.width);
+      game.grid.height = Math.ceil(window.innerHeight / game.tile.height);
     });
     window.addEventListener('keydown', function(event) {
       switch(event.keyCode) {
@@ -209,13 +279,13 @@ var game = game || {
       if (!seed)
         seed = 0;
       seed = (seed*9301+49297) % 233280;
-      return seed/(233280.0);
+      return seed / (233280.0);
     }
   },
   player: {
     x: 0,
     y: 0,
-    speed: 0.25,
+    speed: 0.1,
     update: function () {
       if(game.controls.up) {
         game.player.y -= game.player.speed;
@@ -229,8 +299,10 @@ var game = game || {
       if(game.controls.left) {
         game.player.x -= game.player.speed;
       }
-      game.tile.x = (game.player.x) ? Math.floor(game.player.x / game.tile.width) : 0;
-      game.tile.y = (game.player.y) ? Math.floor(game.player.y / game.tile.height) : 0;
+      game.tile.x = Math.floor(game.player.x);
+      game.tile.y = Math.floor(game.player.y);
+      game.chunk.x = Math.floor(game.player.x / game.chunk.width);
+      game.chunk.y = Math.floor(game.player.y / game.chunk.height);
 
     },
     draw: function () {
@@ -271,17 +343,17 @@ var game = game || {
       }
     },
     update: function () {
-      /*
-      for(var x = game.tile.x - 2; x < game.tile.x + 2; x++) {
-        if(typeof game.tile.chunks[x] == 'undefined') {
-          game.tile.chunks[x] = [];
+
+      for(var x = (game.chunk.x - 1 >= 0) ? game.chunk.x - 1: 0; x < game.chunk.x + 1; x++) {
+        if(typeof game.chunk.chunks[x] == 'undefined') {
+          game.chunk.chunks[x] = [];
         }
-        for(var y = game.tile.y - 2; y < game.tile.y + 2; y++) {
-          if(typeof game.tile.chunks[x][y] == 'undefined') {
-            game.tile.chunks[x][y] = new game.tile.Chunk(x,y);
+        for(var y = (game.chunk.y - 1 >= 0) ? game.chunk.y - 1: 0; y < game.chunk.y + 1; y++) {
+          if(typeof game.chunk.chunks[x][y] == 'undefined') {
+            game.chunk.chunks[x][y] = new game.chunk.Chunk(x,y);
           }
         }
-      }*/
+      }
       game.tile.id = this.idAt(Math.floor(game.player.x), Math.floor(game.player.y));
     },
     Star: function (x, y) {
