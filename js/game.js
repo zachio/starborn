@@ -75,7 +75,19 @@ var game = game || {
       for(var x = game.player.x - window.innerWidth / game.tile.width / 2; x < game.player.x + game.grid.width / 2; x++) {
         for(var y = game.player.y - window.innerHeight / game.tile.height / 2; y < game.player.y + game.grid.height / 2; y++) {
           game.debug.count++;
-          game.ctx.rect(
+          /*
+          if(game.universe.starAt(Math.floor(x), Math.floor(y))) {
+            game.ctx.fillRect(
+              -x * game.tile.width + game.tile.width * Math.floor((game.grid.width - 1) / 2 + game.player.x),
+              -y * game.tile.height + game.tile.height * Math.floor((game.grid.height - 1) / 2 + game.player.y),
+              game.tile.width, game.tile.height);
+          } else {
+            game.ctx.rect(
+              -x * game.tile.width + game.tile.width * Math.floor((game.grid.width - 1) / 2 + game.player.x),
+              -y * game.tile.height + game.tile.height * Math.floor((game.grid.height - 1) / 2 + game.player.y),
+              game.tile.width, game.tile.height);
+          }*/
+        game.ctx.rect(
             -x * game.tile.width + game.tile.width * Math.floor((game.grid.width - 1) / 2 + game.player.x),
             -y * game.tile.height + game.tile.height * Math.floor((game.grid.height - 1) / 2 + game.player.y),
             game.tile.width, game.tile.height);
@@ -85,7 +97,7 @@ var game = game || {
       game.ctx.strokeStyle = "red";
       game.ctx.stroke();
     },
-    draw: function () {
+    drawLog: function () {
       game.ctx.fillStyle = this.background;
       game.ctx.fillRect(20, 20, 200, 250);
       game.ctx.fillStyle = this.textColor;
@@ -94,13 +106,16 @@ var game = game || {
       this.log("player.y: " + game.player.y);
       this.log("tile.id: " + game.tile.id);
       this.log("FPS: " + game.fps.rate);
-      this.log("Draw X: " + this.drawX);
-      this.log("Draw Y: " + this.drawY);
+      this.log("Star: " + game.universe.starAt(Math.floor(game.player.x), Math.floor(game.player.y)));
       this.log("loop Count: " + this.count);
+    },
+    draw: function () {
+
 
       //Draw tile boxes
       game.debug.count = 0;
       this.drawGrid3();
+      this.drawLog();
 
       // Draw player position
       game.ctx.beginPath();
@@ -237,6 +252,10 @@ var game = game || {
         seed = 0;
       seed = (seed*9301+49297) % 233280;
       return seed / (233280.0);
+    },
+    random2: function (seed) {
+      var x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
     }
   },
   player: {
@@ -288,6 +307,13 @@ var game = game || {
       var id = y * this.width + x;
       //console.log("Tile ID is " + id);
       return id;
+    },
+    starAt: function (x, y) {
+      if(game.math.random(this.idAt(x,y)) > 0.9) {
+        return true;
+      } else {
+        return false;
+      }
     },
     draw: function () {
       for(var x = game.tile.x - 2; x < game.tile.x + 2; x++) {
