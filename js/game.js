@@ -53,6 +53,7 @@ var game = game || {
       this.linePosition = 40;
       this.log("player.x: " + game.player.x);
       this.log("player.y: " + game.player.y);
+      this.log("noise value: " + noise.simplex2(Math.floor(game.player.x), Math.floor(game.player.y)));
       this.log("tile.x: " + game.tile.x);
       this.log("tile.y: " + game.tile.y);
       this.log("tile.id: " + game.tile.id);
@@ -165,6 +166,10 @@ var game = game || {
           break;
       }
     });
+
+    //perlin.js noise
+    noise.seed(Math.random());
+
   },
   load: {
     total: {
@@ -205,6 +210,9 @@ var game = game || {
         seed = 0;
       seed = (seed*9301+49297) % 233280;
       return seed/(233280.0);
+    },
+    noise: function() {
+      noise.seed(Math.random());
     }
   },
   player: {
