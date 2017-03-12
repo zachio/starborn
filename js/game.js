@@ -72,22 +72,19 @@ var game = game || {
     },
     drawGrid3: function () {
       game.ctx.beginPath();
-      for(var x = game.player.x - window.innerWidth / game.tile.width / 2; x < game.player.x + game.grid.width / 2; x++) {
-        for(var y = game.player.y - window.innerHeight / game.tile.height / 2; y < game.player.y + game.grid.height / 2; y++) {
+      for(var x = game.player.x - window.innerWidth / game.tile.width / 2 - 1; x < game.player.x + game.grid.width / 2 + 1; x++) {
+        for(var y = game.player.y - window.innerHeight / game.tile.height / 2 - 1; y < game.player.y + game.grid.height / 2 + 1; y++) {
           game.debug.count++;
-          /*
-          if(game.universe.starAt(Math.floor(x), Math.floor(y))) {
-            game.ctx.fillRect(
-              -x * game.tile.width + game.tile.width * Math.floor((game.grid.width - 1) / 2 + game.player.x),
-              -y * game.tile.height + game.tile.height * Math.floor((game.grid.height - 1) / 2 + game.player.y),
-              game.tile.width, game.tile.height);
-          } else {
-            game.ctx.rect(
-              -x * game.tile.width + game.tile.width * Math.floor((game.grid.width - 1) / 2 + game.player.x),
-              -y * game.tile.height + game.tile.height * Math.floor((game.grid.height - 1) / 2 + game.player.y),
-              game.tile.width, game.tile.height);
-          }*/
-        game.ctx.rect(
+          let valuex = -x * game.tile.width + game.tile.width * Math.floor((game.grid.width - 1) / 2 + game.player.x);
+          let valuey = -y * game.tile.height + game.tile.height * Math.floor((game.grid.height - 1) / 2 + game.player.y);
+          let value = (noise.simplex2(valuex,valuey) * 255).toFixed();;
+          let rgb = "rgb("+value+","+value+","+value+")";
+          // console.log(rgb);
+          // debugger;
+          game.ctx.fillStyle = rgb;
+          // console.log(rgb);
+          // debugger;
+          game.ctx.fillRect(
             -x * game.tile.width + game.tile.width * Math.floor((game.grid.width - 1) / 2 + game.player.x),
             -y * game.tile.height + game.tile.height * Math.floor((game.grid.height - 1) / 2 + game.player.y),
             game.tile.width, game.tile.height);
@@ -121,17 +118,7 @@ var game = game || {
       this.drawLog();
 
       // Draw player position
-      game.ctx.beginPath();
-      game.ctx.arc(window.innerWidth / 2, window.innerHeight / 2, 20, 0, 2 * Math.PI, false);
-      game.ctx.strokeStyle = "red";
-      game.ctx.stroke();
-      game.ctx.closePath();
-      game.ctx.beginPath();
-      game.ctx.arc(window.innerWidth / 2, window.innerHeight / 2, 1, 0, 2 * Math.PI, false);
-      game.ctx.fillStyle = "red";
-      game.ctx.fill();
-      game.ctx.closePath();
-
+      game.player.draw();
     }
   },
   erase: function () {
@@ -290,7 +277,16 @@ var game = game || {
 
     },
     draw: function () {
-
+      game.ctx.beginPath();
+      game.ctx.arc(window.innerWidth / 2, window.innerHeight / 2, 20, 0, 2 * Math.PI, false);
+      game.ctx.strokeStyle = "red";
+      game.ctx.stroke();
+      game.ctx.closePath();
+      game.ctx.beginPath();
+      game.ctx.arc(window.innerWidth / 2, window.innerHeight / 2, 1, 0, 2 * Math.PI, false);
+      game.ctx.fillStyle = "red";
+      game.ctx.fill();
+      game.ctx.closePath();
     }
   },
   Sprite: function (file) {
