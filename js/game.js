@@ -10,9 +10,9 @@ var game = game || {
       this.x = x;
       this.y = y;
       this.tiles = [];
-      for(var x = this.x * game.chunk.width; x <  this.x * game.chunk.width + game.chunk.width / game.tile.width; x++) {
+      for(let x = this.x * game.chunk.width; x <  this.x * game.chunk.width + game.chunk.width / game.tile.width; x++) {
         this.tiles[x] = [];
-        for(var y = this.y * game.chunk.height; y < this.y * game.chunk.height + game.chunk.height / game.tile.height; y++) {
+        for(let y = this.y * game.chunk.height; y < this.y * game.chunk.height + game.chunk.height / game.tile.height; y++) {
           this.tiles[x][y] = new game.tile.Tile(x,y);
         }
       }
@@ -69,6 +69,49 @@ var game = game || {
     });
 
   },
+  load: {
+        total: {
+          scripts: 0,
+          sprites: 0,
+          audio: 0
+        },
+        scripts: function () {
+          if(game.config.scripts.length) {
+            console.log("loading scripts...");
+            for(var i = 0; i < game.config.scripts.length; i++) {
+                var script = document.createElement("script");
+                var src = game.config.scripts[i];
+                script.setAttribute("src", src);
+                script.addEventListener("load", function() {
+                    game.load.total.scripts++;
+                    if(game.load.total.scripts == game.config.scripts.length) {
+                            game.load.sprites();
+                            game.load.audio();
+                            //perlin.js noise
+                            /* global noise */
+                            noise.seed(game.config.seed);
+                    }
+                    console.log(this.src.substring(this.src.lastIndexOf('/')+1) + " loaded...");
+                });
+                document.head.appendChild(script);
+            }
+          }
+        },
+        sprites: function () {
+          if(game.config.sprites.length) {
+            for(var i = 0; i < game.config.sprites.length; i++) {
+             // game.config.sprites[i] = new game.graphics.Sprite(game.config.sprites[i]);
+            }
+          } else {
+            game.loop();
+          }
+        },
+        audio: function () {
+          if(game.config.audio.length) {
+    
+          }
+        }
+    },
   loop: function() {
     game.erase();
     game.draw();

@@ -24,7 +24,7 @@ game. debug = {
       this.log("tile.id: " + game.tile.id);
       this.log("FPS: " + game.debug.fps.rate);
       this.log("Star: " + game.galaxy.starAt(Math.floor(game.player.x), Math.floor(game.player.y)));
-      this.log("loop Count: " + this.count);
+      this.log("total scripts: " + game.load.total.scripts);
     },
     drawGrid: function(){
         //draw tiles

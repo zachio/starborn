@@ -20,7 +20,7 @@ game.load = {
                             //perlin.js noise
                             noise.seed(game.config.seed);
                     }
-                    console.log(this.src + " loaded...");
+                    console.log(this.src.substring(url.lastIndexOf('/')+1) + " loaded...");
                 });
                 document.head.appendChild(script);
             }
