@@ -1,7 +1,16 @@
+game = game || {};
+
 game.config = {
-  sprites: [
-    new game.Sprite('img/space.jpg')
-  ],
-  audio: [],
-  mods: [],
+  seed: 1,
+  scripts : [
+    "js/perlin.js",
+    "js/game.controls.js",
+    "js/game.debug.js",
+    "js/game.galaxy.js",
+    "js/game.graphics.js",
+    "js/game.math.js",
+    "js/game.player.js"
+    ],
+    sprites : [],
+    audio: []
 }
