@@ -19,49 +19,46 @@ game. debug = {
       this.log("player.x: " + game.player.x);
       this.log("player.y: " + game.player.y);
       this.log("noise value: " + noise.simplex2(Math.floor(game.player.x), Math.floor(game.player.y)));
-      this.log("tile.x: " + game.tile.x);
-      this.log("tile.y: " + game.tile.y);
-      this.log("tile.id: " + game.tile.id);
       this.log("FPS: " + game.debug.fps.rate);
       this.log("Star: " + game.galaxy.starAt(Math.floor(game.player.x), Math.floor(game.player.y)));
       this.log("total scripts: " + game.load.total.scripts);
     },
     drawGrid: function(){
         //draw tiles
-        game.ctx.strokeStyle = "red";
-        for(var x = 0; x < game.chunk.width; x++) {
-            for(var y = 0; y < game.chunk.height; y++) {
-              if (game.galaxy.starAt(x, y)) { 
-                game.ctx.fillRect (
-                    x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
-                    y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
-                    game.tile.width,
-                    game.tile.height
-                );
-              } else { 
-                game.ctx.strokeRect(
-                    x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
-                    y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
-                    game.tile.width,
-                    game.tile.height
-                );
+        
+        for(var chunkX = -1; chunkX <= 1; chunkX++ ) {
+          for(var chunkY = -1; chunkY <= 1; chunkY++) {
+            game.ctx.strokeStyle = "red";
+            for(var x = chunkX * game.chunk.width; x < game.chunk.width * chunkX + game.chunk.width; x++) {
+              for(var y = chunkY * game.chunk.height; y < game.chunk.height * chunkY + game.chunk.height; y++) {
+                if (game.galaxy.starAt(x, y)) { 
+                  game.ctx.fillRect (
+                      x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
+                      y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
+                      game.tile.width,
+                      game.tile.height
+                  );
+                } else { 
+                  game.ctx.strokeRect(
+                      x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
+                      y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
+                      game.tile.width,
+                      game.tile.height
+                  );
+                }
               }
-                game.ctx.strokeRect(
-                    x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
-                    y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
-                    game.tile.width,
-                    game.tile.height
-                );
             }
-        }
-        //draw chunk
-        game.ctx.strokeStyle = "green";
-        game.ctx.strokeRect(
-            -game.player.x * game.tile.width + window.innerWidth / 2,
-            -game.player.y * game.tile.height + window.innerHeight / 2,
-            game.tile.width * game.chunk.width,
-            game.tile.height * game.chunk.height
+            //draw chunk
+            game.ctx.strokeStyle = "green";
+            game.ctx.strokeRect(
+              chunkX * game.chunk.width * game.tile.width - game.player.x *  game.tile.width + window.innerWidth / 2,
+              chunkY * game.chunk.height * game.tile.height - game.player.y * game.tile.height  + window.innerHeight / 2,
+              game.tile.width * game.chunk.width,
+              game.tile.height * game.chunk.height
             );
+          }
+        }
+        
         
     },
     draw: function () {

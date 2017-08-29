@@ -1,4 +1,4 @@
-
+var game = game || {};
 
 game.galaxy = {
     width: 65535,
@@ -9,6 +9,7 @@ game.galaxy = {
       return id;
     },
     starAt: function (x, y) {
+      /* global noise */
       if( noise.simplex2(x, y) > 0.9) {
         return true;
       } else {

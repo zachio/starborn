@@ -1,4 +1,4 @@
-game = game || {};
+var game = game || {};
 
 game.config = {
   seed: 1,
@@ -9,7 +9,8 @@ game.config = {
     "js/game.galaxy.js",
     "js/game.graphics.js",
     "js/game.math.js",
-    "js/game.player.js"
+    "js/game.player.js",
+    "js/game.chunk.js"
     ],
     sprites : [],
     audio: []
