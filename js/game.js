@@ -56,8 +56,14 @@ var game = game || {
           audio: 0
         },
         scripts: function () {
-          if(game.config.scripts.length) {
-            console.log("loading scripts...");
+          console.log("loading config script...");
+          var script = document.createElement("script");
+          script.setAttribute("src", "js/game.config.js");
+          document.head.appendChild(script);
+          script.addEventListener("load", function(){
+            console.log(this.src.substring(this.src.lastIndexOf('/')+1) + " loaded...");
+            if(game.config.scripts.length) {
+            console.log("loading game scripts...");
             for(var i = 0; i < game.config.scripts.length; i++) {
                 var script = document.createElement("script");
                 var src = game.config.scripts[i];
@@ -76,6 +82,8 @@ var game = game || {
                 document.head.appendChild(script);
             }
           }
+          });
+          
         },
         sprites: function () {
           if(game.config.sprites.length) {
@@ -99,6 +107,7 @@ var game = game || {
     requestAnimationFrame(game.loop);
   },
   update: function () {
+    game.chunk.update();
     game.galaxy.update();
     game.player.update();
     game.debug.fps.update();

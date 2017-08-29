@@ -1,6 +1,6 @@
 var game = game || {};
 
-game. debug = {
+game.debug = {
     background: "rgba(0,0,0,0.9)",
     textColor: "white",
     linePosition: 40,
@@ -18,20 +18,24 @@ game. debug = {
       this.linePosition = 40;
       this.log("player.x: " + game.player.x);
       this.log("player.y: " + game.player.y);
+      this.log("chunk.x: " + game.chunk.x);
+      this.log("chunk.y: " + game.chunk.y);
+      /* global noise */
       this.log("noise value: " + noise.simplex2(Math.floor(game.player.x), Math.floor(game.player.y)));
       this.log("FPS: " + game.debug.fps.rate);
       this.log("Star: " + game.galaxy.starAt(Math.floor(game.player.x), Math.floor(game.player.y)));
       this.log("total scripts: " + game.load.total.scripts);
     },
     drawGrid: function(){
-        //draw tiles
         
-        for(var chunkX = -1; chunkX <= 1; chunkX++ ) {
-          for(var chunkY = -1; chunkY <= 1; chunkY++) {
+        //Chunks are drawn 4 x 4
+        for(var chunkX = game.chunk.x - 2; chunkX <= game.chunk.x + 2; chunkX++ ) {
+          for(var chunkY = game.chunk.y - 2; chunkY <= game.chunk.y + 2; chunkY++) {
             game.ctx.strokeStyle = "red";
             for(var x = chunkX * game.chunk.width; x < game.chunk.width * chunkX + game.chunk.width; x++) {
               for(var y = chunkY * game.chunk.height; y < game.chunk.height * chunkY + game.chunk.height; y++) {
                 if (game.galaxy.starAt(x, y)) { 
+                  game.ctx.fillStyle = "white";
                   game.ctx.fillRect (
                       x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
                       y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
@@ -62,11 +66,8 @@ game. debug = {
         
     },
     draw: function () {
-      //Draw tile boxes
-      game.debug.count = 0;
-      
+      this.drawGrid();
       this.drawLog();
-        this.drawGrid();
       // Draw player position
       game.player.draw();
     },

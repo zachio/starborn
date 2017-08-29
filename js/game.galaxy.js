@@ -5,7 +5,6 @@ game.galaxy = {
     height: 65535,
     idAt: function (x, y) {
       var id = y * this.width + x;
-      //console.log("Tile ID is " + id);
       return id;
     },
     starAt: function (x, y) {
@@ -28,17 +27,6 @@ game.galaxy = {
     },
     update: function () {
 
-      for(var x = (game.chunk.x - 1 >= 0) ? game.chunk.x - 1: 0; x < game.chunk.x + 1; x++) {
-        if(typeof game.chunk.chunks[x] == 'undefined') {
-          game.chunk.chunks[x] = [];
-        }
-        for(var y = (game.chunk.y - 1 >= 0) ? game.chunk.y - 1: 0; y < game.chunk.y + 1; y++) {
-          if(typeof game.chunk.chunks[x][y] == 'undefined') {
-            game.chunk.chunks[x][y] = new game.chunk.Chunk(x,y);
-          }
-        }
-      }
-      game.tile.id = this.idAt(Math.floor(game.player.x), Math.floor(game.player.y));
     },
     Star: function (x, y) {
       this.x = x;
