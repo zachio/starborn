@@ -16,14 +16,17 @@ game.debug = {
       game.ctx.fillRect(20, 20, 200, 250);
       game.ctx.fillStyle = this.textColor;
       this.linePosition = 40;
-      this.log("player.x: " + game.player.x);
-      this.log("player.y: " + game.player.y);
+      let x = Math.floor(game.player.x);
+      let y = Math.floor(game.player.y);
+      this.log("player.x: " + x);
+      this.log("player.y: " + y);
       this.log("chunk.x: " + game.chunk.x);
       this.log("chunk.y: " + game.chunk.y);
       /* global noise */
-      this.log("noise value: " + noise.simplex2(Math.floor(game.player.x), Math.floor(game.player.y)));
+      this.log("noise value: " + noise.simplex2(x, y));
       this.log("FPS: " + game.debug.fps.rate);
-      this.log("Star: " + game.galaxy.starAt(Math.floor(game.player.x), Math.floor(game.player.y)));
+      this.log("Star Name: " + game.galaxy.starName(x, y));
+      this.log("total planets: " + game.galaxy.planetCount(x, y));
       this.log("total scripts: " + game.load.total.scripts);
     },
     drawGrid: function(){

@@ -34,6 +34,7 @@ var game = game || {
     this.grid.height = Math.ceil(window.innerHeight / this.tile.height);
     this.canvas.style.background = "black";
     this.ctx = this.canvas.getContext('2d');
+    this.ctx.imageSmoothingEnabled = false;
     this.load.scripts();
     window.addEventListener('load', function() {
       document.body.style.margin = 0;
