@@ -10,7 +10,9 @@ game.config = {
     "js/game.graphics.js",
     "js/game.math.js",
     "js/game.player.js",
-    "js/game.chunk.js"
+    "js/game.chunk.js",
+    "js/game.assets.js",
+    "js/game.star.js"
     ],
     sprites : [],
     audio: []

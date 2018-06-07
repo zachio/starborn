@@ -19,15 +19,30 @@ game.galaxy = {
       
     },
     draw: function () {
-      for(var x = game.tile.x - 2; x < game.tile.x + 2; x++) {
-        for(var y = game.tile.y - 2; y < game.tile.y + 2; y++) {
-          game.ctx.save();
-          game.ctx.translate(window.innerWidth / 2 - game.player.x, 
-            window.innerHeight / 2 - game.player.y);
-          game.ctx.drawImage(game.assets.sprites[0].image, 
-            game.assets.sprites[0].image.width * x, 
-            game.assets.sprites[0].image.height * y);
-          game.ctx.restore();
+      //Chunks are drawn 4 x 4
+      for(var chunkX = game.chunk.x - 2; chunkX <= game.chunk.x + 2; chunkX++ ) {
+        for(var chunkY = game.chunk.y - 2; chunkY <= game.chunk.y + 2; chunkY++) {
+          game.ctx.strokeStyle = "red";
+          for(var x = chunkX * game.chunk.width; x < game.chunk.width * chunkX + game.chunk.width; x++) {
+            for(var y = chunkY * game.chunk.height; y < game.chunk.height * chunkY + game.chunk.height; y++) {
+              if (game.galaxy.starAt(x, y)) { 
+                game.ctx.fillStyle = "white";
+                game.ctx.strokeStyle = game.star.color(x, y);
+                game.ctx.lineWidth = 5;
+                game.ctx.beginPath();
+                game.ctx.arc(
+                  x * game.tile.width - game.player.x * game.tile.width + game.tile.width / 2 + window.innerWidth / 2,
+                  y * game.tile.height - game.player.y * game.tile.height + game.tile.height / 2 + window.innerHeight / 2,
+                  game.star.size(x, y), //star size
+                  0,
+                  2 * Math.PI
+                );
+                game.ctx.fill();
+                game.ctx.stroke();
+                game.ctx.closePath();
+              }
+            }
+          }
         }
       }
     },
@@ -44,12 +59,12 @@ game.galaxy = {
     starName: function(x, y) {
       if(this.starAt(x, y)) {
         var syllable = {
-          min: 3,
-          max: 8,
+          min: 2,
+          max: 5,
           words: [
             "lo", "fa", "for", "mat", "at", "ab", "ba", "co", "ca", "ap", "ck", 
             "to", "pe", "qu", "ir", "ko", "x", "zo", "zeo", "pla", "mn", "mo", 
-            "do", "da", "plo", "ch", "io", "z"
+            "do", "da", "plo", "ch", "io", "z", "dron", "al"
             ],
           count: 0
         };

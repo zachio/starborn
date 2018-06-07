@@ -18,7 +18,9 @@ var game = game || {
   ctx: null,
   draw: function () {
     game.player.draw();
-    game.debug.draw();
+    game.galaxy.draw();
+    // game.debug.draw();
+    game.debug.drawLog();
   },
   erase: function () {
     game.ctx.clearRect(0,0, window.innerWidth, window.innerHeight);

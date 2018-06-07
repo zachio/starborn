@@ -72,7 +72,7 @@ game.debug = {
       this.drawGrid();
       this.drawLog();
       // Draw player position
-      game.player.draw();
+      this.player.draw();
     },
     fps: {
       currentTime: 0,
