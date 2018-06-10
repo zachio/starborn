@@ -20,7 +20,7 @@ var game = game || {
     switch(this.view) {
       case "galaxy":
         game.galaxy.draw();
-        game.debug.drawGrid();
+        // game.debug.drawGrid();
         game.player.draw();
         game.debug.drawLog();
         break;
