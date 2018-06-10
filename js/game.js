@@ -17,10 +17,21 @@ var game = game || {
   },
   ctx: null,
   draw: function () {
-    game.player.draw();
-    game.galaxy.draw();
-    // game.debug.draw();
-    game.debug.drawLog();
+    switch(this.view) {
+      case "galaxy":
+        game.galaxy.draw();
+        game.debug.drawGrid();
+        game.player.draw();
+        game.debug.drawLog();
+        break;
+      case "star":
+        game.star.draw.sun();
+        game.star.draw.planets();
+        // game.debug.drawGrid();
+        game.player.draw();
+        game.debug.draw.star();
+        break;
+    }
   },
   erase: function () {
     game.ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
@@ -115,6 +126,5 @@ var game = game || {
     game.player.update();
     game.debug.fps.update();
   },
-
-
+  view: "galaxy"
 }

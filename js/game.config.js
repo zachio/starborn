@@ -12,7 +12,8 @@ game.config = {
     "js/game.player.js",
     "js/game.chunk.js",
     "js/game.assets.js",
-    "js/game.star.js"
+    "js/game.star.js",
+    "js/game.planet.js",
     ],
     sprites : [],
     audio: []

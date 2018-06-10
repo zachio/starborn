@@ -8,15 +8,14 @@ game.galaxy = {
       return id;
     },
     starAt: function (x, y) {
-
+      x = Math.floor(x);
+      y = Math.floor(y);
         /* global noise */
         if( noise.simplex2(x, y) > 0.9) {
           return true;
         } else {
           return false;
         }
-    
-      
     },
     draw: function () {
       //Chunks are drawn 4 x 4
@@ -50,6 +49,8 @@ game.galaxy = {
 
     },
     StarSystem: function (x, y) {
+      x = Math.floor(x);
+      y = Math.floor(y);
       this.x = x;
       this.y = y;
       this.name = game.galaxy.starName(x, y);
@@ -57,6 +58,8 @@ game.galaxy = {
     },
     debug: null,
     starName: function(x, y) {
+      x = Math.floor(x);
+      y = Math.floor(y);
       if(this.starAt(x, y)) {
         var syllable = {
           min: 2,
@@ -77,7 +80,9 @@ game.galaxy = {
         return starname.charAt(0).toUpperCase() + starname.slice(1) + " System";
       } else { return false }
     },
-    planetCount: function(x,y) {
+    planetCount: function(x, y) {
+      x = Math.floor(x);
+      y = Math.floor(y);
       if(this.starAt(x, y)) {
         return game.math.pRand(x, y, 1, 12);
       } else { return false }

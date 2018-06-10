@@ -11,6 +11,24 @@ game.debug = {
       game.ctx.fillText(message, 40, this.linePosition);
       this.linePosition += 20;
     },
+    draw: {
+      star: function() {
+        var debug = game.debug;
+        game.ctx.fillStyle = debug.background;
+        game.ctx.fillRect(20, 20, 200, 250);
+        game.ctx.fillStyle = debug.textColor;
+        debug.linePosition = 40;
+        debug.log("player.x: " + Math.floor(game.player.x));
+        debug.log("player.y: " + Math.floor(game.player.y));
+        debug.log("player.galaxy.x: " + Math.floor(game.player.galaxy.x));
+        debug.log("player.galaxy.y: " + Math.floor(game.player.galaxy.y));
+        debug.log("chunk.x: " + game.chunk.x);
+        debug.log("chunk.y: " + game.chunk.y);
+        debug.log("FPS: " + game.debug.fps.rate);
+        debug.log("Star Name: " + game.galaxy.starName(Math.floor(game.player.galaxy.x), Math.floor(game.player.galaxy.y)));
+        debug.log("total planets: " + game.galaxy.planetCount(Math.floor(game.player.galaxy.x), Math.floor(game.player.galaxy.y)));
+      }
+    },
     drawLog: function () {
       game.ctx.fillStyle = this.background;
       game.ctx.fillRect(20, 20, 200, 250);
@@ -18,45 +36,36 @@ game.debug = {
       this.linePosition = 40;
       let x = Math.floor(game.player.x);
       let y = Math.floor(game.player.y);
-      this.log("player.x: " + x);
-      this.log("player.y: " + y);
+      this.log("player.x: " + game.player.x.toFixed(1));
+      this.log("player.y: " + game.player.y.toFixed(1));
+      this.log("player.galaxy.x: " + Math.floor(game.player.galaxy.x));
+      this.log("player.galaxy.y: " + Math.floor(game.player.galaxy.y));
       this.log("chunk.x: " + game.chunk.x);
       this.log("chunk.y: " + game.chunk.y);
       /* global noise */
       this.log("noise value: " + noise.simplex2(x, y));
       this.log("FPS: " + game.debug.fps.rate);
-      this.log("Star Name: " + game.galaxy.starName(x, y));
-      this.log("total planets: " + game.galaxy.planetCount(x, y));
-      this.log("total scripts: " + game.load.total.scripts);
+      this.log("Star Name: " + game.galaxy.starName(Math.floor(game.player.galaxy.x), Math.floor(game.player.galaxy.y)));
+      this.log("total planets: " + game.galaxy.planetCount(Math.floor(game.player.galaxy.x), Math.floor(game.player.galaxy.y)));
     },
     drawGrid: function(){
-        
+        game.ctx.lineWidth = 1;
         //Chunks are drawn 4 x 4
         for(var chunkX = game.chunk.x - 2; chunkX <= game.chunk.x + 2; chunkX++ ) {
           for(var chunkY = game.chunk.y - 2; chunkY <= game.chunk.y + 2; chunkY++) {
             game.ctx.strokeStyle = "red";
             for(var x = chunkX * game.chunk.width; x < game.chunk.width * chunkX + game.chunk.width; x++) {
               for(var y = chunkY * game.chunk.height; y < game.chunk.height * chunkY + game.chunk.height; y++) {
-                if (game.galaxy.starAt(x, y)) { 
-                  game.ctx.fillStyle = "white";
-                  game.ctx.fillRect (
-                      x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
-                      y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
-                      game.tile.width,
-                      game.tile.height
-                  );
-                } else { 
-                  game.ctx.strokeRect(
-                      x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
-                      y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
-                      game.tile.width,
-                      game.tile.height
-                  );
-                }
+                game.ctx.strokeRect(
+                    x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
+                    y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
+                    game.tile.width,
+                    game.tile.height
+                );
               }
             }
             //draw chunk
-            game.ctx.strokeStyle = "green";
+            game.ctx.strokeStyle = "lime";
             game.ctx.strokeRect(
               chunkX * game.chunk.width * game.tile.width - game.player.x *  game.tile.width + window.innerWidth / 2,
               chunkY * game.chunk.height * game.tile.height - game.player.y * game.tile.height  + window.innerHeight / 2,
@@ -67,12 +76,6 @@ game.debug = {
         }
         
         
-    },
-    draw: function () {
-      this.drawGrid();
-      this.drawLog();
-      // Draw player position
-      this.player.draw();
     },
     fps: {
       currentTime: 0,
