@@ -50,7 +50,6 @@ game.star = {
           var y = -game.player.y * game.tile.height + position.y * game.tile.height + game.tile.height / 2 + window.innerHeight / 2;
           var size = game.star.planet.size(game.player.galaxy.x, game.player.galaxy.y, i);
           var color = game.star.planet.color(position.x, position.y);
-          game.ctx.fillStyle = color;
           
           //Only draw when planets are in window view
           if(x > -size && x < window.innerWidth + size && y > -size && y < window.innerHeight + size) {
@@ -60,6 +59,7 @@ game.star = {
               0,
               2 * Math.PI
             );
+            game.ctx.fillStyle = color;
             game.ctx.fill();
             game.ctx.closePath();
           }
