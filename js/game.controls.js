@@ -24,7 +24,6 @@ game.controls = {
 };
 
 window.addEventListener('keydown', function(event) {
-  console.log(event.keyCode);
   switch(event.keyCode) {
     case 38: // up
     case 87: // w
