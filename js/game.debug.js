@@ -54,23 +54,23 @@ game.debug = {
         for(var chunkX = game.chunk.x - 2; chunkX <= game.chunk.x + 2; chunkX++ ) {
           for(var chunkY = game.chunk.y - 2; chunkY <= game.chunk.y + 2; chunkY++) {
             game.ctx.strokeStyle = "red";
-            for(var x = chunkX * game.chunk.width; x < game.chunk.width * chunkX + game.chunk.width; x++) {
-              for(var y = chunkY * game.chunk.height; y < game.chunk.height * chunkY + game.chunk.height; y++) {
+            for(var x = chunkX * game.chunk.width * game.scale; x < game.chunk.width * game.scale * chunkX + game.chunk.width * game.scale; x++) {
+              for(var y = chunkY * game.chunk.height * game.scale; y < game.chunk.height * game.scale * chunkY + game.chunk.height * game.scale; y++) {
                 game.ctx.strokeRect(
-                    x * game.tile.width - game.player.x * game.tile.width + window.innerWidth / 2,
-                    y * game.tile.height - game.player.y * game.tile.height + window.innerHeight / 2,
-                    game.tile.width,
-                    game.tile.height
+                    x * game.tile.width * game.scale - game.player.x * game.tile.width * game.scale + window.innerWidth / 2,
+                    y * game.tile.height * game.scale - game.player.y * game.tile.height * game.scale + window.innerHeight / 2,
+                    game.tile.width * game.scale,
+                    game.tile.height * game.scale
                 );
               }
             }
             //draw chunk
             game.ctx.strokeStyle = "lime";
             game.ctx.strokeRect(
-              chunkX * game.chunk.width * game.tile.width - game.player.x *  game.tile.width + window.innerWidth / 2,
-              chunkY * game.chunk.height * game.tile.height - game.player.y * game.tile.height  + window.innerHeight / 2,
-              game.tile.width * game.chunk.width,
-              game.tile.height * game.chunk.height
+              chunkX * game.chunk.width * game.scale * game.tile.width * game.scale - game.player.x * game.tile.width * game.scale + window.innerWidth / 2,
+              chunkY * game.chunk.height * game.scale * game.tile.height * game.scale - game.player.y * game.tile.height * game.scale + window.innerHeight / 2,
+              game.tile.width * game.scale * game.chunk.width,
+              game.tile.height * game.scale * game.chunk.height * game.scale
             );
           }
         }

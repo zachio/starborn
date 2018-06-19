@@ -78,6 +78,54 @@ game.player = {
         }
       }
     },
+    radar: {
+      draw: function() {
+        var player = game.player;
+        var center = {
+          x: window.innerWidth / 2 + game.tile.width / 2, 
+          y: window.innerHeight / 2 + game.tile.height / 2
+        };
+        var offset = 1.57;
+        
+        for(var i = 0; i < game.star.planet.total(player.galaxy.x, player.galaxy.y); i++) {
+          var position = game.star.planet.position(player.galaxy.x, player.galaxy.y, i);
+          
+          var color = game.star.planet.color(position.x, position.y);
+          //Creating the angle to point the arrow the right direction 
+          //and using an offset to rotate the graphic the correct angle
+          
+          var angle = game.math.angle(game.player.x, game.player.y, position.x, position.y) + 1.57;
+          
+          game.ctx.save();
+          game.ctx.translate(center.x, center.y);
+          game.ctx.rotate(angle);
+          game.ctx.beginPath();
+          game.ctx.moveTo(0, -50);
+          game.ctx.lineTo(10, -30);
+          game.ctx.lineTo(-10, -30);
+          game.ctx.fillStyle = color.hue;
+          game.ctx.fill();
+          game.ctx.closePath();
+          game.ctx.restore();
+        }
+        //Radar for sun
+        //suns position relative to the player
+        
+        var sunPosition = game.math.position(0, 0);
+        var angle = game.math.angle(game.player.x, game.player.y, 0, 0) + offset;
+        game.ctx.save();
+        game.ctx.translate(center.x, center.y);
+        game.ctx.rotate(angle);
+        game.ctx.beginPath();
+        game.ctx.moveTo(0, -50);
+        game.ctx.lineTo(10, -30);
+        game.ctx.lineTo(-10, -30);
+        game.ctx.fillStyle = game.star.color(player.galaxy.x, player.galaxy.y);
+        game.ctx.fill();
+        game.ctx.closePath();
+        game.ctx.restore();
+      }
+    },
     draw: function () {
       if(game.view == "star") {
         //Save canvas state and rotate ship
@@ -113,19 +161,21 @@ game.player = {
           };
           
           game.ctx.beginPath();
+          if (this.thrust.flicker == false) thrust.y = thrust.y + 5; 
           game.ctx.arc(thrust.x, thrust.y, thrust.size, 0, 2 * Math.PI, false);
           game.ctx.closePath();
           var gradient = game.ctx.createRadialGradient(thrust.x, thrust.y, 0, thrust.x, thrust.y, thrust.size);
-          gradient.addColorStop(0, "cyan");
+          gradient.addColorStop(0, "rgb(0, 246, 255)");
           if(this.thrust.flicker) {
-            gradient.addColorStop(0.5, "cyan");
+            gradient.addColorStop(0.25, "rgb(0, 246, 255)");
           } 
-          gradient.addColorStop(1, "transparent");
+          gradient.addColorStop(1, "rgba(0, 246, 255,0)");
           game.ctx.fillStyle = gradient;
           game.ctx.fill();
         }
         
         game.ctx.restore();
+        
       } else {
         game.ctx.lineWidth = 1;
         game.ctx.beginPath();

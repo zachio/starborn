@@ -50,6 +50,9 @@ game.star = {
           var y = -game.player.y * game.tile.height + position.y * game.tile.height + game.tile.height / 2 + window.innerHeight / 2;
           var size = game.star.planet.size(game.player.galaxy.x, game.player.galaxy.y, i);
           var color = game.star.planet.color(position.x, position.y);
+          var gradient = game.ctx.createRadialGradient(x, y, 0, x, y, size);
+          gradient.addColorStop(0, color.highlight);
+          gradient.addColorStop(1, color.hue);
           
           //Only draw when planets are in window view
           if(x > -size && x < window.innerWidth + size && y > -size && y < window.innerHeight + size) {
@@ -59,7 +62,7 @@ game.star = {
               0,
               2 * Math.PI
             );
-            game.ctx.fillStyle = color;
+            game.ctx.fillStyle = gradient;
             game.ctx.fill();
             game.ctx.closePath();
           }
@@ -94,8 +97,21 @@ game.star = {
         var r = game.math.pRand(x, y, 0, 255);
         var g = game.math.pRand(x+x, y, 0, 255);
         var b = game.math.pRand(x, y+y, 0, 255);
-        return "rgb("+r+","+g+","+b+")";
+        var hlr = r + 25 <= 255 ? r + 25 : 255;
+        var hlg = g + 25 <= 255 ? g + 25 : 255;
+        var hlb = b + 25 <= 255 ? b + 25 : 255;
+        return {
+          hue: "rgb("+r+","+g+","+b+")",
+          highlight: "rgb("+hlr+","+hlg+","+hlb+")"
+        };
 
+      },
+      total: function(x, y) {
+        x = Math.floor(x);
+        y = Math.floor(y);
+        if(game.galaxy.starAt(x, y)) {
+          return game.math.pRand(x, y, 1, 12);
+        } else { return false }
       }
     }
 };

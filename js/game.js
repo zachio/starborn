@@ -13,7 +13,8 @@ var game = game || {
       } else {
         this.isStar = false;
       }
-    }
+    },
+    scale: 1,
   },
   ctx: null,
   draw: function () {
@@ -27,6 +28,7 @@ var game = game || {
       case "star":
         game.star.draw.sun();
         game.star.draw.planets();
+        game.player.radar.draw();
         // game.debug.drawGrid();
         game.player.draw();
         game.debug.draw.star();
