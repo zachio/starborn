@@ -1,11 +1,11 @@
 var game = game || {};
 
 game.player = {
-    x: 0,
-    y: 0,
+    x: 0.5,
+    y: -0.5,
     galaxy: {
       x: 0,
-      y: 0
+      y: -1
     },
     angle: 0,
     speed: {
