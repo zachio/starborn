@@ -13,12 +13,16 @@ game.controls = {
       }
     },
     action: function() {
-      if(game.view == "galaxy" && game.galaxy.starAt(Math.floor(game.player.x), Math.floor(game.player.y))) {
-        game.player.galaxy.x = game.player.x;
-        game.player.galaxy.y = game.player.y;
+      var isStar = game.galaxy.starAt(Math.floor(game.player.x), Math.floor(game.player.y));
+      if(game.view == "galaxy" && isStar) {
+        game.player.galaxy.x = Math.floor(game.player.x);
+        game.player.galaxy.y = Math.floor(game.player.y);
         game.player.x = 0;
         game.player.y = 0;
         game.view = "star";
+      }
+      if(game.view == "title") {
+        game.view = "galaxy";
       }
     }
 };

@@ -7,7 +7,14 @@ game.load = {
           audio: 0
         },
         scripts: function () {
-          if(game.config.scripts.length) {
+          console.log("loading config script...");
+          var script = document.createElement("script");
+          script.setAttribute("src", "js/game.config.js");
+          document.head.appendChild(script);
+          script.addEventListener("load", function(){
+            console.log(this.src.substring(this.src.lastIndexOf('/')+1) + " loaded...");
+            if(game.config.scripts.length) {
+            console.log("loading game scripts...");
             for(var i = 0; i < game.config.scripts.length; i++) {
                 var script = document.createElement("script");
                 var src = game.config.scripts[i];
@@ -18,13 +25,16 @@ game.load = {
                             game.load.sprites();
                             game.load.audio();
                             //perlin.js noise
+                            /* global noise */
                             noise.seed(game.config.seed);
                     }
-                    console.log(this.src.substring(url.lastIndexOf('/')+1) + " loaded...");
+                    console.log(this.src.substring(this.src.lastIndexOf('/')+1) + " loaded...");
                 });
                 document.head.appendChild(script);
             }
           }
+          });
+          
         },
         sprites: function () {
           if(game.config.sprites.length) {
@@ -37,7 +47,13 @@ game.load = {
         },
         audio: function () {
           if(game.config.audio.length) {
-    
+            var eluvium = game.config.audio[0];
+            var audio = document.createElement("audio");
+            audio.setAttribute("type", "audio/mpeg");
+            audio.setAttribute("src", eluvium); 
+            audio.addEventListener("load", function(){
+              audio.play();
+            });
           }
         }
     };

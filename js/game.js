@@ -13,23 +13,37 @@ var game = game || {
       } else {
         this.isStar = false;
       }
-    },
-    scale: 1,
+    }
+  },
+  getScale: function() {
+    if(game.view == "star") {
+      return game.star.scale;
+    } else {
+      return game.galaxy.scale;
+    }
   },
   ctx: null,
   draw: function () {
     switch(this.view) {
+      case "title":
+        game.galaxy.draw();
+        game.debug.drawGrid();
+        //game.player.draw();
+        game.title.draw();
+        // game.debug.drawLog();
+        break;
       case "galaxy":
         game.galaxy.draw();
-        // game.debug.drawGrid();
+        game.debug.drawGrid();
         game.player.draw();
         game.debug.drawLog();
         break;
       case "star":
+        game.star.background.draw();
         game.star.draw.sun();
         game.star.draw.planets();
         game.player.radar.draw();
-        // game.debug.drawGrid();
+        game.debug.drawGrid();
         game.player.draw();
         game.debug.draw.star();
         break;
@@ -65,6 +79,7 @@ var game = game || {
     });
 
   },
+  audio: [],
   load: {
         total: {
           scripts: 0,
@@ -87,11 +102,13 @@ var game = game || {
                 script.addEventListener("load", function() {
                     game.load.total.scripts++;
                     if(game.load.total.scripts == game.config.scripts.length) {
-                            game.load.sprites();
-                            game.load.audio();
-                            //perlin.js noise
-                            /* global noise */
-                            noise.seed(game.config.seed);
+                      //Scripts are ready to use
+                      game.star.background.init();
+                      game.loop();
+                      game.load.audio();
+                      //perlin.js noise
+                      /* global noise */
+                      noise.seed(game.config.seed);
                     }
                     console.log(this.src.substring(this.src.lastIndexOf('/')+1) + " loaded...");
                 });
@@ -102,6 +119,7 @@ var game = game || {
           
         },
         sprites: function () {
+          //Plan to use this part for loading the sprites
           if(game.config.sprites.length) {
             for(var i = 0; i < game.config.sprites.length; i++) {
              // game.config.sprites[i] = new game.graphics.Sprite(game.config.sprites[i]);
@@ -111,8 +129,16 @@ var game = game || {
           }
         },
         audio: function () {
-          if(game.config.audio.length) {
-    
+          for(var i = 0; i < game.config.audio.length; i++) {
+            var src = game.config.audio[i];
+            var audio = document.createElement("audio");
+            audio.setAttribute("type", "audio/mpeg");
+            audio.setAttribute("src", src); 
+            this.total.audio++;
+            game.audio.push(audio);
+            audio.addEventListener("canplay", function(){
+              audio.play();
+            });
           }
         }
     },
@@ -128,5 +154,5 @@ var game = game || {
     game.player.update();
     game.debug.fps.update();
   },
-  view: "galaxy"
+  view: "title",
 }

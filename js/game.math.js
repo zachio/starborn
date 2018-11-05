@@ -1,7 +1,7 @@
 var game = game || {};
 
 game.math = {
-    //Gives the angle in radians
+    //Returns the angle in radians
     angle: function (p1x, p1y, p2x, p2y) {
       return Math.atan2(p2y - p1y, p2x - p1x);
     },
@@ -12,6 +12,14 @@ game.math = {
     pRand: function(x, y, min, max) {
       /* global noise */
       return Math.floor(Math.abs(noise.simplex2(x + game.config.seed, y + game.config.seed)) * (max - min) + min);
+    },
+    random: {
+      choice: function(choices) {
+        return choices[Math.round(this.range(0, choices.length-1))];
+      },
+      range: function(min, max) {
+        return (min + (Math.random() * (max - min)));
+      }
     },
     // Position relative to the player position used to draw on canvas
     position: function(x, y) {

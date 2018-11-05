@@ -1,8 +1,8 @@
 var game = game || {};
 
 game.player = {
-    x: 0.5,
-    y: -0.5,
+    x: 1,
+    y: -1,
     galaxy: {
       x: 0,
       y: -1
@@ -10,8 +10,8 @@ game.player = {
     angle: 0,
     speed: {
       current: 0,
-      max: 0.1,
-      accelerate: 0.0025
+      max: 0.01,
+      accelerate: 0.0001
     },
     size: 32,
     thrust: {
@@ -21,43 +21,61 @@ game.player = {
       if(game.view == "star") {
         game.player.x += this.speed.current * Math.sin(this.angle);
         game.player.y -= this.speed.current * Math.cos(this.angle);
+        if(this.speed.current < 0) {
+          this.speed.current = 0;
+        }
       }
       
       if(game.controls.up) {
-        if(game.view == "star") {
-          if(this.speed.current < this.speed.max) {
-            this.speed.current += this.speed.accelerate;
-          }
-        } else {
-          game.player.y -= game.player.speed.max;
+        switch(game.view) {
+          case "title":
+            break;
+          case "star":
+            if(this.speed.current < this.speed.max) {
+              this.speed.current += this.speed.accelerate;
+            }
+            break;
+          case "galaxy":
+            game.player.y -= game.player.speed.max;
+            break;
         }
       } else {
         if(game.view == "star" && this.speed.current > 0) {
-          this.speed.current -= this.speed.accelerate;
+            this.speed.current -= this.speed.accelerate;
         }
       }
       if(game.controls.right) {
-        if(game.view == "star") {
-          game.player.angle += game.player.speed.max;
-        } else {
-          game.player.x += game.player.speed.max;
+        switch(game.view) {
+          case "star":
+            if(game.view == "star") {
+              this.angle += this.speed.max;
+            }
+            break;
+          case "galaxy":
+            this.x += this.speed.max;
+            break;
         }
         
       }
       if(game.controls.down) {
-        if(game.view == "star") {
-          game.player.x -= this.speed.current * Math.sin(this.angle);
-          game.player.y += this.speed.current * Math.cos(this.angle);
-        } else {
-          game.player.y += game.player.speed.max;
+        switch(game.view) {
+          case "star":
+            game.player.x -= this.speed.current * Math.sin(this.angle);
+            game.player.y += this.speed.current * Math.cos(this.angle);
+            break;
+          case "galaxy":
+            game.player.y += game.player.speed.max;
+            break;
         }
-        
       }
       if(game.controls.left) {
-        if(game.view == "star") {
-          game.player.angle -= game.player.speed.max;
-        } else {
-          game.player.x -= game.player.speed.max;
+        switch(game.view) {
+          case "star":
+            game.player.angle -= game.player.speed.max;
+            break;
+          case "galaxy":
+            game.player.x -= game.player.speed.max;
+            break;
         }
       }
       game.tile.x = Math.floor(game.player.x);
@@ -79,11 +97,13 @@ game.player = {
       }
     },
     radar: {
+      offset: -30,
+      size: 5,
       draw: function() {
         var player = game.player;
         var center = {
-          x: window.innerWidth / 2 + game.tile.width / 2, 
-          y: window.innerHeight / 2 + game.tile.height / 2
+          x: window.innerWidth / 2 + game.tile.width, 
+          y: window.innerHeight / 2 + game.tile.height
         };
         var offset = 1.57;
         
@@ -94,15 +114,15 @@ game.player = {
           //Creating the angle to point the arrow the right direction 
           //and using an offset to rotate the graphic the correct angle
           
-          var angle = game.math.angle(game.player.x, game.player.y, position.x, position.y) + 1.57;
+          var angle = game.math.angle(game.player.x, game.player.y, position.x, position.y) + offset;
           
           game.ctx.save();
-          game.ctx.translate(center.x, center.y);
+          game.ctx.translate(center.x + this.offset, center.y + this.offset);
           game.ctx.rotate(angle);
           game.ctx.beginPath();
-          game.ctx.moveTo(0, -50);
-          game.ctx.lineTo(10, -30);
-          game.ctx.lineTo(-10, -30);
+          game.ctx.moveTo(0, this.offset);
+          game.ctx.lineTo(this.size, this.offset + this.size);
+          game.ctx.lineTo(-this.size, this.offset + this.size);
           game.ctx.fillStyle = color.hue;
           game.ctx.fill();
           game.ctx.closePath();
@@ -114,12 +134,12 @@ game.player = {
         var sunPosition = game.math.position(0, 0);
         var angle = game.math.angle(game.player.x, game.player.y, 0, 0) + offset;
         game.ctx.save();
-        game.ctx.translate(center.x, center.y);
+        game.ctx.translate(center.x + this.offset, center.y + this.offset);
         game.ctx.rotate(angle);
         game.ctx.beginPath();
-        game.ctx.moveTo(0, -50);
-        game.ctx.lineTo(10, -30);
-        game.ctx.lineTo(-10, -30);
+        game.ctx.moveTo(0 * game.getScale(), this.offset);
+        game.ctx.lineTo(this.size, this.offset + this.size);
+        game.ctx.lineTo(-this.size, this.offset + this.size);
         game.ctx.fillStyle = game.star.color(player.galaxy.x, player.galaxy.y);
         game.ctx.fill();
         game.ctx.closePath();
@@ -130,7 +150,9 @@ game.player = {
       if(game.view == "star") {
         //Save canvas state and rotate ship
         game.ctx.save();
-        game.ctx.translate(window.innerWidth / 2 + this.size / 2, window.innerHeight / 2 + this.size / 2);
+        game.ctx.translate(
+          window.innerWidth / 2 + game.tile.width / 2 - this.size / 2, 
+          window.innerHeight / 2 + game.tile.height / 2 - this.size / 2);
         game.ctx.rotate(this.angle);
         
         //Draw hull
@@ -143,7 +165,7 @@ game.player = {
         game.ctx.fill();
         
         //Draw window
-        var windowsize = 5;
+        var windowsize = this.size / 8;
         game.ctx.beginPath();
         game.ctx.moveTo(0, 0);
         game.ctx.lineTo(windowsize, windowsize);
@@ -157,7 +179,7 @@ game.player = {
           var thrust = {
             x: 0,
             y: this.size / 2,
-            size: this.size / 2,
+            size: this.size / 2 
           };
           
           game.ctx.beginPath();

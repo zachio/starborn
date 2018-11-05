@@ -3,6 +3,7 @@ var game = game || {};
 game.galaxy = {
     width: 65535,
     height: 65535,
+    scale: 2,
     idAt: function (x, y) {
       var id = y * this.width + x;
       return id;
@@ -18,6 +19,11 @@ game.galaxy = {
         }
     },
     draw: function () {
+      var scale = game.getScale();
+      var tile = {
+        width: game.tile.width * scale,
+        height: game.tile.height * scale
+      };
       //Chunks are drawn 4 x 4
       for(var chunkX = game.chunk.x - 2; chunkX <= game.chunk.x + 2; chunkX++ ) {
         for(var chunkY = game.chunk.y - 2; chunkY <= game.chunk.y + 2; chunkY++) {
@@ -30,8 +36,8 @@ game.galaxy = {
                 game.ctx.lineWidth = 5;
                 game.ctx.beginPath();
                 game.ctx.arc(
-                  x * game.tile.width - game.player.x * game.tile.width + game.tile.width / 2 + window.innerWidth / 2,
-                  y * game.tile.height - game.player.y * game.tile.height + game.tile.height / 2 + window.innerHeight / 2,
+                  x * tile.width - game.player.x * tile.width + tile.width / 2 + window.innerWidth / 2,
+                  y * tile.height - game.player.y * tile.height + tile.height / 2 + window.innerHeight / 2,
                   game.star.size(x, y), //star size
                   0,
                   2 * Math.PI

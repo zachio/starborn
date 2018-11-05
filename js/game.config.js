@@ -14,7 +14,10 @@ game.config = {
     "js/game.assets.js",
     "js/game.star.js",
     "js/game.planet.js",
+    "js/game.title.js",
     ],
     sprites : [],
-    audio: []
+    audio: [
+      "audio/Eluvium.mp3"
+      ]
 }
